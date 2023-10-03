@@ -51,11 +51,8 @@ yarn start:offline
 Copy and replace your `url` - found in Serverless `deploy` command output - and `name` parameter in the following `curl` command in your terminal or in Postman to test your newly deployed application.
 
 ```
-curl --location --request POST 'https://myApiEndpoint/dev/hello' \
+curl --location --request GET 'https://myApiEndpoint/dev/products' \
 --header 'Content-Type: application/json' \
---data-raw '{
-    "name": "Frederic"
-}'
 ```
 
 ## Template features
@@ -91,7 +88,7 @@ The project code base is mainly located within the `src` folder. This folder is 
 │   │   └── products.ts                  # Products mock data
 │   │
 │   └── models                           # Data models and interfaces
-│       └── product.ts                   # Product interface
+│       └── product.d.ts                   # Product interface
 │
 ├── package.json
 ├── serverless.ts                       # Serverless service file

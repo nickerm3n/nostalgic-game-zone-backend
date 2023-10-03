@@ -8,7 +8,12 @@ export default {
         method: 'get',
         path: 'products',
         cors: true,
-        private: false,
+        responses: {
+          200: {
+            description: 'Products',
+            bodyType: 'Products',
+          }
+        }
       },
     },
   ],
