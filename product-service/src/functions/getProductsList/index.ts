@@ -12,8 +12,8 @@ export default {
           200: {
             description: 'Products',
             bodyType: 'Products',
-          }
-        }
+          },
+        },
       },
     },
   ],

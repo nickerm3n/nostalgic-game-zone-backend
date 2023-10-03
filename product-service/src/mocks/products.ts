@@ -1,40 +1,40 @@
-import {Product} from "../types/product";
+import { Product } from '../types/product';
 
 export const products: Product[] = [
   {
-    description: "Classic platformer with iconic plumber",
-    id: "7567ec4b-b10c-48c5-9345-fc73c48a80aa",
+    description: 'Classic platformer with iconic plumber',
+    id: '7567ec4b-b10c-48c5-9345-fc73c48a80aa',
     price: 24,
-    title: "Super Mario Bros.",
+    title: 'Super Mario Bros.',
   },
   {
-    description: "Battle aliens in this action-packed shooter",
-    id: "7567ec4b-b10c-48c5-9345-fc73c48a80a1",
+    description: 'Battle aliens in this action-packed shooter',
+    id: '7567ec4b-b10c-48c5-9345-fc73c48a80a1',
     price: 15,
-    title: "Space Invaders",
+    title: 'Space Invaders',
   },
   {
-    description: "Help a frog cross the road and river",
-    id: "7567ec4b-b10c-48c5-9345-fc73c48a80a3",
+    description: 'Help a frog cross the road and river',
+    id: '7567ec4b-b10c-48c5-9345-fc73c48a80a3',
     price: 23,
-    title: "Frogger",
+    title: 'Frogger',
   },
   {
-    description: "Classic arcade game of food and ghosts",
-    id: "7567ec4b-b10c-48c5-9345-fc73348a80a1",
+    description: 'Classic arcade game of food and ghosts',
+    id: '7567ec4b-b10c-48c5-9345-fc73348a80a1',
     price: 15,
-    title: "Pac-Man",
+    title: 'Pac-Man',
   },
   {
-    description: "Fight in a martial arts tournament",
-    id: "7567ec4b-b10c-48c5-9445-fc73c48a80a2",
+    description: 'Fight in a martial arts tournament',
+    id: '7567ec4b-b10c-48c5-9445-fc73c48a80a2',
     price: 23,
-    title: "Street Fighter",
+    title: 'Street Fighter',
   },
   {
-    description: "Puzzle game with falling blocks",
-    id: "7567ec4b-b10c-45c5-9345-fc73c48a80a1",
+    description: 'Puzzle game with falling blocks',
+    id: '7567ec4b-b10c-45c5-9345-fc73c48a80a1',
     price: 15,
-    title: "Tetris",
+    title: 'Tetris',
   },
 ];

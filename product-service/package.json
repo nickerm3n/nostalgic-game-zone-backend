@@ -5,7 +5,10 @@
   "main": "serverless.ts",
   "scripts": {
     "start:offline": "sls offline",
-    "deploy": "sls deploy"
+    "deploy": "sls deploy",
+    "lint": "eslint 'src/**/*.{js,ts}'",
+    "lint:fix": "eslint --fix 'src/**/*.{js,ts}'",
+    "format": "prettier --write 'src/**/*.{js,ts}'"
   },
   "engines": {
     "node": ">=14.15.0"
@@ -20,8 +23,14 @@
     "@serverless/typescript": "^3.0.0",
     "@types/aws-lambda": "^8.10.71",
     "@types/node": "^14.14.25",
+    "@typescript-eslint/eslint-plugin": "^6.7.4",
+    "@typescript-eslint/parser": "^6.7.4",
     "esbuild": "^0.14.11",
+    "eslint": "^8.50.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.0",
     "json-schema-to-ts": "^1.5.0",
+    "prettier": "^3.0.3",
     "serverless": "^3.0.0",
     "serverless-esbuild": "^1.23.3",
     "serverless-offline": "^13.1.2",
