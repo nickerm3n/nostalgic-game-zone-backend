@@ -1,4 +1,6 @@
-export const products = [
+import {Product} from "@models/product";
+
+export const products: Product[] = [
   {
     description: "Classic platformer with iconic plumber",
     id: "7567ec4b-b10c-48c5-9345-fc73c48a80aa",

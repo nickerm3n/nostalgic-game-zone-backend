@@ -32,12 +32,19 @@ This template contains a single lambda function triggered by an HTTP request mad
 
 ### Locally
 
-In order to test the hello function locally, run the following command:
+To replicate AWS Lambda and API Gateway for local development and testing, this project uses `serverless-offline`. Before starting the offline server, ensure you have installed the necessary plugins by running.
 
-- `npx sls invoke local -f hello --path src/functions/hello/mock.json` if you're using NPM
-- `yarn sls invoke local -f hello --path src/functions/hello/mock.json` if you're using Yarn
+Start the offline server:
 
-Check the [sls invoke local command documentation](https://www.serverless.com/framework/docs/providers/aws/cli-reference/invoke-local/) for more information.
+### Using NPM:
+```shell
+npm run start:offline
+```
+
+### Using Yarn:
+```shell
+yarn start:offline
+```
 
 ### Remotely
 
@@ -59,29 +66,38 @@ The project code base is mainly located within the `src` folder. This folder is 
 
 - `functions` - containing code base and configuration for your lambda functions
 - `libs` - containing shared code base between your lambdas
+- `mocks` - containing mock data used for local development
+- `models` - containing interfaces and types for your data models.
 
 ```
 .
 ├── src
-│   ├── functions               # Lambda configuration and source code folder
-│   │   ├── hello
-│   │   │   ├── handler.ts      # `Hello` lambda source code
-│   │   │   ├── index.ts        # `Hello` lambda Serverless configuration
-│   │   │   ├── mock.json       # `Hello` lambda input parameter, if any, for local invocation
-│   │   │   └── schema.ts       # `Hello` lambda input event JSON-Schema
+│   ├── functions                        # Lambda configuration and source code folder
+│   │   ├── getProductsById
+│   │   │   ├── getProductsById.ts       # `getProductsById` lambda source code
+│   │   │   └── index.ts                 # `getProductsById` lambda Serverless configuration
+│   │   ├── getProductsList
+│   │   │   ├── getProductsList.ts       # `getProductsList` lambda source code
+│   │   │   └── index.ts                 # `getProductsList` lambda Serverless configuration
 │   │   │
-│   │   └── index.ts            # Import/export of all lambda configurations
+│   │   └── index.ts                     # Import/export of all lambda configurations
 │   │
-│   └── libs                    # Lambda shared code
-│       └── apiGateway.ts       # API Gateway specific helpers
-│       └── handlerResolver.ts  # Sharable library for resolving lambda handlers
-│       └── lambda.ts           # Lambda middleware
+│   ├── libs                             # Lambda shared code
+│   │    └── apiGateway.ts               # API Gateway specific helpers
+│   │    └── handlerResolver.ts          # Sharable library for resolving lambda handlers
+│   │    └── lambda.ts                   # Lambda middleware
+│   │
+│   ├── mocks                            # Mock data
+│   │   └── products.ts                  # Products mock data
+│   │
+│   └── models                           # Data models and interfaces
+│       └── product.ts                   # Product interface
 │
 ├── package.json
-├── serverless.ts               # Serverless service file
-├── tsconfig.json               # Typescript compiler configuration
-├── tsconfig.paths.json         # Typescript paths
-└── webpack.config.js           # Webpack configuration
+├── serverless.ts                       # Serverless service file
+├── tsconfig.json                       # Typescript compiler configuration
+├── tsconfig.paths.json                 # Typescript paths
+└── webpack.config.js                   # Webpack configuration
 ```
 
 ### 3rd party libraries
