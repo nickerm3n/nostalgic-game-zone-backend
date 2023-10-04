@@ -1,12 +1,18 @@
 import type { AWS } from '@serverless/typescript';
 
-import getProductsList from "@functions/getProductsList";
-import getProductsById from "@functions/getProductsById";
+import getProductsList from '@functions/getProductsList';
+import getProductsById from '@functions/getProductsById';
 
 const serverlessConfiguration: AWS = {
   service: 'product-service',
   frameworkVersion: '3',
-  plugins: ['serverless-esbuild', 'serverless-auto-swagger', 'serverless-offline'],
+  plugins: [
+    'serverless-esbuild',
+    'serverless-dotenv-plugin',
+    'serverless-auto-swagger',
+    'serverless-offline',
+  ],
+  useDotenv: true,
   provider: {
     name: 'aws',
     runtime: 'nodejs14.x',
@@ -35,7 +41,8 @@ const serverlessConfiguration: AWS = {
     },
     autoswagger: {
       typefiles: ['./src/types/product.d.ts'],
-    }
+      host: '${env:SWAGGER_HOST}',
+    },
   },
 };
 

@@ -3,9 +3,13 @@ import { middyfy } from '@libs/lambda';
 
 import { products } from '@mocks/products';
 
-export const getProductsById: EventAPIGatewayEventWithPathParameters<{
+type ProductPathParameters = {
   productId: string;
-}> = async event => {
+};
+
+const getProductsById: EventAPIGatewayEventWithPathParameters<
+  ProductPathParameters
+> = async event => {
   const { productId } = event.pathParameters;
   const product = products.find(p => p.id === productId);
 
