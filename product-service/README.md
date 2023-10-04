@@ -22,40 +22,31 @@ Depending on your preferred package manager, follow the instructions below to de
 
 ## Test your service
 
-This template contains a single lambda function triggered by an HTTP request made on the provisioned API Gateway REST API `/hello` route with `POST` method. The request body must be provided as `application/json`. The body structure is tested by API Gateway against `src/functions/hello/schema.ts` JSON-Schema definition: it must contain the `name` property.
+To ensure that everything is set up correctly, you'll want to test both locally and after deploying to AWS.
 
-- requesting any other path than `/hello` with any other method than `POST` will result in API Gateway returning a `403` HTTP error code
-- sending a `POST` request to `/hello` with a payload **not** containing a string property named `name` will result in API Gateway returning a `400` HTTP error code
-- sending a `POST` request to `/hello` with a payload containing a string property named `name` will result in API Gateway returning a `200` HTTP status code with a message saluting the provided name and the detailed event processed by the lambda
+### Local Testing
 
-> :warning: As is, this template, once deployed, opens a **public** endpoint within your AWS account resources. Anybody with the URL can actively execute the API Gateway endpoint and the corresponding lambda. You should protect this endpoint with the authentication method of your choice.
+__Start the Serverless Offline__: This will emulate AWS Lambda and API Gateway locally.
 
-### Locally
-
-To replicate AWS Lambda and API Gateway for local development and testing, this project uses `serverless-offline`. Before starting the offline server, ensure you have installed the necessary plugins by running.
-
-Start the offline server:
-
-### Using NPM:
 ```shell
-npm run start:offline
+npm run start
 ```
 
-### Using Yarn:
+Once it's running, you should see endpoints being listed in the terminal.
+
+### Swagger UI for Testing:
+
+or a more user-friendly interface and detailed view of the available endpoints, you can use the Swagger UI. Post deployment, you can access it via:
+[Swagger UI for the product service](https://bodgq2gex2.execute-api.eu-west-1.amazonaws.com/swagger)
+Additionally, once the deployment is completed, a link to the Swagger UI is provided in the terminal output for easy access.
+
+### Clean up resources
+
+To ensure you aren't incurring unnecessary charges, you can remove the deployed resources once testing is completed:
+
 ```shell
-yarn start:offline
+npm run remove
 ```
-
-### Remotely
-
-Copy and replace your `url` - found in Serverless `deploy` command output - and `name` parameter in the following `curl` command in your terminal or in Postman to test your newly deployed application.
-
-```
-curl --location --request GET 'https://myApiEndpoint/dev/products' \
---header 'Content-Type: application/json' \
-```
-
-## Template features
 
 ### Project structure
 
@@ -64,37 +55,39 @@ The project code base is mainly located within the `src` folder. This folder is 
 - `functions` - containing code base and configuration for your lambda functions
 - `libs` - containing shared code base between your lambdas
 - `mocks` - containing mock data used for local development
-- `models` - containing interfaces and types for your data models.
+- `types` - containing interfaces and types for your data models.
 
 ```
 .
 ├── src
-│   ├── functions                        # Lambda configuration and source code folder
-│   │   ├── getProductsById
-│   │   │   ├── getProductsById.ts       # `getProductsById` lambda source code
-│   │   │   └── index.ts                 # `getProductsById` lambda Serverless configuration
-│   │   ├── getProductsList
-│   │   │   ├── getProductsList.ts       # `getProductsList` lambda source code
-│   │   │   └── index.ts                 # `getProductsList` lambda Serverless configuration
-│   │   │
-│   │   └── index.ts                     # Import/export of all lambda configurations
+│   ├── functions                         # Lambda configuration and source code folder
+│   │   └── products                      # getProducts lambda configuration and source code folder
+│   │       ├── getProductsById
+│   │       │   ├── handler.ts            # `getProductsById` lambda source code
+│   │       │   ├── handler.test.ts       # `getProductsById` lambda test
+│   │       │   └── index.ts              # `getProductsById` lambda Serverless configuration
+│   │       ├── getProductsList
+│   │       │   ├── handler.ts            # `getProductsList` lambda source code
+│   │       │   ├── handler.test.ts       # `getProductsById` lambda test
+│   │       │   └── index.ts              # `getProductsList` lambda Serverless configuration
+│   │       └── index.ts                  # Import/export of all lambda configurations
 │   │
-│   ├── libs                             # Lambda shared code
-│   │    └── apiGateway.ts               # API Gateway specific helpers
-│   │    └── handlerResolver.ts          # Sharable library for resolving lambda handlers
-│   │    └── lambda.ts                   # Lambda middleware
+│   ├── libs                              # Lambda shared code
+│   │    └── apiGateway.ts                # API Gateway specific helpers
+│   │    └── handlerResolver.ts           # Sharable library for resolving lambda handlers
+│   │    └── lambda.ts                    # Lambda middleware
 │   │
-│   ├── mocks                            # Mock data
-│   │   └── products.ts                  # Products mock data
+│   ├── mocks                             # Mock data
+│   │   └── products.ts                   # Products mock data
 │   │
-│   └── models                           # Data models and interfaces
-│       └── product.d.ts                   # Product interface
+│   └── types                             # Data models and interfaces
+│       └── product.d.ts                  # Product interface
 │
 ├── package.json
 ├── serverless.ts                       # Serverless service file
 ├── tsconfig.json                       # Typescript compiler configuration
 ├── tsconfig.paths.json                 # Typescript paths
-└── webpack.config.js                   # Webpack configuration
+├── jest.config.js                      # Jest configuration
 ```
 
 ### 3rd party libraries
