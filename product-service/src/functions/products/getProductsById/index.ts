@@ -9,7 +9,7 @@ export default {
         path: 'products/{productId}',
         responses: {
           200: {
-            description: 'Product type',
+            description: 'Product',
             bodyType: 'Product',
           },
         },
