@@ -4,12 +4,15 @@ import { Product } from '../types/product';
 import { v4 as uuidv4 } from 'uuid';
 
 export class ProductService {
-  constructor(private docClient: DynamoDBDocumentClient) {}
+  constructor(
+    private docClient: DynamoDBDocumentClient,
+    private tableName = 'products',
+  ) {}
 
   async getAllProducts() {
     const products = await this.docClient.send(
       new ScanCommand({
-        TableName: 'products',
+        TableName: this.tableName,
       }),
     );
 
@@ -19,7 +22,7 @@ export class ProductService {
   async getProductById(productId: string) {
     const product = await this.docClient.send(
       new GetCommand({
-        TableName: 'products',
+        TableName: this.tableName,
         Key: { id: productId },
       }),
     );
@@ -27,10 +30,10 @@ export class ProductService {
     return product.Item as Product;
   }
 
-  async createProduct(product: Omit<Product, 'id'>) {
+  async createProduct(product: Partial<Product>) {
     const newProduct = await this.docClient.send(
       new PutCommand({
-        TableName: 'products',
+        TableName: this.tableName,
         Item: { id: uuidv4(), ...product },
       }),
     );
