@@ -1,44 +1,27 @@
-import { ScanCommand, GetCommand } from '@aws-sdk/lib-dynamodb';
 import { formatJSONResponse } from '@libs/api-gateway';
 import { middyfy } from '@libs/lambda';
 
 import { APIGatewayProxyEvent, APIGatewayProxyResult, Handler } from 'aws-lambda';
 import { docClient } from '@dynamodb/docClient';
 
+import { ProductService } from '../../../services/productService';
+import { StockService } from '../../../services/stockService';
+
+import { joinProductsAndStocks } from '../helpers';
+
+const productService = new ProductService(docClient);
+const stockService = new StockService(docClient);
+
 const getProductsList: Handler<APIGatewayProxyEvent, APIGatewayProxyResult> = async () => {
   try {
-    const productsData = await docClient.send(
-      new ScanCommand({
-        TableName: 'products',
-      }),
-    );
-
-    const products = productsData.Items;
-
-    const combinedData = [];
-    for (const product of products) {
-      const stockData = await docClient.send(
-        new GetCommand({
-          TableName: 'stocks',
-          Key: { product_id: product.id },
-        }),
-      );
-
-      const stock = stockData.Item;
-
-      combinedData.push({
-        ...product,
-        count: stock ? stock.count : 0,
-      });
-    }
+    const products = await productService.getAllProducts();
+    const stocks = await stockService.getAllStocks();
 
     return formatJSONResponse({
-      products: combinedData,
+      products: joinProductsAndStocks(products, stocks),
     });
   } catch (error) {
-    return formatJSONResponse({
-      error,
-    });
+    return formatJSONResponse(error, 500);
   }
 };
 

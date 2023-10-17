@@ -1,9 +1,9 @@
 export interface Product {
-  description: string;
+  description?: string;
   id: string;
   price: number;
   title: string;
-  imageUrl: string;
+  imageUrl?: string;
 }
 
 export type Products = Product[];

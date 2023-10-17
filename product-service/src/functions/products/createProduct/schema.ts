@@ -6,5 +6,5 @@ export default {
     price: { type: 'number' },
     imageUrl: { type: 'string' },
   },
-  required: ['name', 'title', 'price'],
+  required: ['title', 'price'],
 } as const;

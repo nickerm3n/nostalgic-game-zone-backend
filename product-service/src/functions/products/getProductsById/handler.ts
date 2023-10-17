@@ -2,7 +2,10 @@ import { EventAPIGatewayEventWithPathParameters, formatJSONResponse } from '@lib
 import { middyfy } from '@libs/lambda';
 
 import { docClient } from '@dynamodb/docClient';
-import { GetCommand } from '@aws-sdk/lib-dynamodb';
+
+import { ProductService } from '../../../services/productService';
+
+const productService = new ProductService(docClient);
 
 type ProductPathParameters = {
   productId: string;
@@ -14,37 +17,15 @@ const getProductsById: EventAPIGatewayEventWithPathParameters<
   const { productId } = event.pathParameters;
 
   try {
-    const productData = await docClient.send(
-      new GetCommand({
-        TableName: 'products',
-        Key: { id: productId },
-      }),
-    );
-
-    const product = productData.Item;
+    const product = await productService.getProductById(productId);
 
     if (!product) {
       return formatJSONResponse({ message: 'Product not found' }, 404);
     }
 
-    const stockData = await docClient.send(
-      new GetCommand({
-        TableName: 'stocks',
-        Key: { product_id: productId },
-      }),
-    );
-
-    const stock = stockData.Item;
-    const combinedData = {
-      ...product,
-      stock: stock ? stock : 0,
-    };
-
-    return formatJSONResponse({ product: combinedData });
+    return formatJSONResponse({ product });
   } catch (error) {
-    return formatJSONResponse({
-      error,
-    });
+    return formatJSONResponse(error, 500);
   }
 };
 

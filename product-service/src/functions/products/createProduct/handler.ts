@@ -1,25 +1,17 @@
-import { PutCommand } from '@aws-sdk/lib-dynamodb';
 import { formatJSONResponse, ValidatedEventAPIGatewayProxyEvent } from '@libs/api-gateway';
 import { middyfy } from '@libs/lambda';
 
-import { v4 as uuidv4 } from 'uuid';
-
 import { docClient } from '@dynamodb/docClient';
 import schema from './schema';
+import { ProductService } from '../../../services/productService';
+
+const productService = new ProductService(docClient);
 
 const createProduct: ValidatedEventAPIGatewayProxyEvent<typeof schema> = async event => {
   const productData = event.body;
 
   try {
-    const newProduct = await docClient.send(
-      new PutCommand({
-        TableName: 'products',
-        Item: {
-          id: uuidv4(),
-          ...productData,
-        },
-      }),
-    );
+    const newProduct = productService.createProduct(productData);
 
     return formatJSONResponse({
       product: newProduct,
