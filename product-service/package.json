@@ -24,12 +24,15 @@
     "@aws-sdk/lib-dynamodb": "^3.428.0",
     "@middy/core": "^3.4.0",
     "@middy/http-cors": "^4.6.4",
+    "@middy/http-error-handler": "^4.6.5",
     "@middy/http-json-body-parser": "^3.4.0",
     "@middy/http-urlencode-path-parser": "^4.6.4",
+    "@middy/validator": "^4.6.5",
     "aws-sdk": "^2.1473.0",
     "serverless-auto-swagger": "^2.12.0",
     "serverless-dynamodb-local": "^0.2.40",
-    "uuid": "^9.0.1"
+    "uuid": "^9.0.1",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@serverless/typescript": "^3.0.0",
