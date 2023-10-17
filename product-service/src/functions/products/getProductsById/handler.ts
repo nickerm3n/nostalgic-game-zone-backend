@@ -16,6 +16,8 @@ const getProductsById: EventAPIGatewayEventWithPathParameters<
 > = async event => {
   const { productId } = event.pathParameters;
 
+  console.log('Get product by id', productId);
+
   try {
     const product = await productService.getProductById(productId);
 

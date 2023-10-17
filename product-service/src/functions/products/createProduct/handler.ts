@@ -14,6 +14,8 @@ const createProduct: ValidatedEventAPIGatewayProxyEvent<
 > = async event => {
   const productData = event.body;
 
+  console.log('Create product', productData);
+
   if (!productSchema.safeParse(productData).success) {
     return formatJSONResponse(
       {

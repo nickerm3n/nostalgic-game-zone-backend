@@ -13,6 +13,8 @@ const productService = new ProductService(docClient);
 const stockService = new StockService(docClient);
 
 const getProductsList: Handler<APIGatewayProxyEvent, APIGatewayProxyResult> = async () => {
+  console.log('Get products list');
+
   try {
     const products = await productService.getAllProducts();
     const stocks = await stockService.getAllStocks();
