@@ -70,6 +70,11 @@ The project code base is mainly located within the `src` folder. This folder is 
 │   │       │   ├── handler.ts            # `getProductsList` lambda source code
 │   │       │   ├── handler.test.ts       # `getProductsById` lambda test
 │   │       │   └── index.ts              # `getProductsList` lambda Serverless configuration
+│   │       ├── createProduct
+│   │       │   ├── handler.ts            # `createProduct` lambda source code
+│   │       │   ├── handler.test.ts       # `createProduct` lambda test
+│   │       │   ├── schema.ts             # `createProduct` schema for validation of incoming requests
+│   │       │   └── index.ts              # `createProduct` lambda Serverless configuration
 │   │       └── index.ts                  # Import/export of all lambda configurations
 │   │
 │   ├── libs                              # Lambda shared code
