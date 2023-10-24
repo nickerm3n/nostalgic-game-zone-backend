@@ -6,7 +6,17 @@ export default {
     {
       http: {
         method: "get",
-        path: "import/{fileName}",
+        path: "import",
+        request: {
+          parameters: {
+            querystrings: {
+              name: true,
+            },
+          },
+        },
+        cors: {
+          origin: "*",
+        },
       },
     },
   ],

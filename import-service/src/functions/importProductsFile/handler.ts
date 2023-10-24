@@ -1,5 +1,4 @@
 import type { ValidatedEventAPIGatewayProxyEvent } from "@libs/api-gateway";
-import { formatJSONResponse } from "@libs/api-gateway";
 import { middyfy } from "@libs/lambda";
 
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
@@ -7,14 +6,19 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 const s3Client = new S3Client({ region: "eu-west-1" });
 
-const importProductsFile: ValidatedEventAPIGatewayProxyEvent<any> = async (
-  event,
-) => {
-  const { fileName } = event.pathParameters;
+interface QueryStringParameters {
+  name: string;
+}
+
+const importProductsFile: ValidatedEventAPIGatewayProxyEvent<
+  {},
+  QueryStringParameters
+> = async (event) => {
+  const name = event.queryStringParameters.name;
 
   const command = new PutObjectCommand({
     Bucket: "s3-nostalgic-game-zone",
-    Key: `uploaded/${fileName}`,
+    Key: `uploaded/${name}`,
     ContentType: "text/csv",
   });
 
@@ -22,7 +26,15 @@ const importProductsFile: ValidatedEventAPIGatewayProxyEvent<any> = async (
     expiresIn: 3600,
   });
 
-  return formatJSONResponse({ signedUrl });
+  return {
+    statusCode: 200,
+    body: signedUrl,
+    headers: {
+      "Access-Control-Allow-Headers": "Content-Type",
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET",
+    },
+  };
 };
 
 export const main = middyfy(importProductsFile);

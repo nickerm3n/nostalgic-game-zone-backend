@@ -5,11 +5,11 @@ export default {
   events: [
     {
       s3: {
-        bucket: "${self:custom.client.bucketName}",
+        bucket: "s3-nostalgic-game-zone",
         event: "s3:ObjectCreated:*",
         rules: [
           {
-            prefix: "uploads/",
+            prefix: "uploaded/",
           },
           {
             suffix: ".csv",
