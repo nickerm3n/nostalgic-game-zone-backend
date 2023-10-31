@@ -37,17 +37,21 @@ export const main = async (event: S3Event): Promise<void> => {
     stream.Readable.from(dataString)
       .pipe(csv())
       .on("data", (row) => {
-        sqsClient.send(
-          new SendMessageCommand({
-            QueueUrl: SQS_QUEUE_URL,
-            MessageBody: JSON.stringify(row),
-          }),
-        );
-
         data.push(row);
       })
       .on("end", async () => {
         console.log(`Parsed ${data.length} rows from CSV in ${key}`);
+
+        if (!data.length) {
+          return;
+        }
+
+        await sqsClient.send(
+          new SendMessageCommand({
+            MessageBody: JSON.stringify(data),
+            QueueUrl: SQS_QUEUE_URL,
+          }),
+        );
 
         // Copy the file to the 'parsed' folder
         const destinationKey = key.replace("uploaded/", "parsed/");

@@ -56,12 +56,7 @@ const serverlessConfiguration: AWS = {
       },
       {
         Effect: 'Allow',
-        Action: [
-          'sqs:ReceiveMessage',
-          'sqs:DeleteMessage',
-          'sqs:GetQueueAttributes',
-          'sqs:SendMessage',
-        ],
+        Action: ['sqs:*'],
         Resource: {
           'Fn::GetAtt': ['catalogItemsQueue', 'Arn'],
         },
@@ -146,6 +141,13 @@ const serverlessConfiguration: AWS = {
         Value: { Ref: 'catalogItemsQueue' },
         Export: {
           Name: '${self:service}-${self:provider.stage}-CatalogItemsQueueUrl',
+        },
+      },
+      CatalogItemsQueueArn: {
+        Description: 'ARN for the catalog items SQS queue',
+        Value: { 'Fn::GetAtt': ['catalogItemsQueue', 'Arn'] },
+        Export: {
+          Name: '${self:service}-${self:provider.stage}-CatalogItemsQueueArn',
         },
       },
     },

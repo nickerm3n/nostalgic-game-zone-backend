@@ -27,6 +27,13 @@ const serverlessConfiguration: AWS = {
         statements: [
           {
             Effect: "Allow",
+            Action: "sqs:SendMessage",
+            Resource: {
+              "Fn::ImportValue": "product-service-dev-CatalogItemsQueueArn",
+            },
+          },
+          {
+            Effect: "Allow",
             Action: [
               "s3:ListBucket",
               "s3:PutObject",
