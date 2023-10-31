@@ -1,6 +1,11 @@
 import type { AWS } from '@serverless/typescript';
 
-import { getProductsList, getProductsById, createProduct } from '@functions/products';
+import {
+  getProductsList,
+  getProductsById,
+  createProduct,
+  catalogBatchProcess,
+} from '@functions/products';
 
 const serverlessConfiguration: AWS = {
   service: 'product-service',
@@ -17,6 +22,7 @@ const serverlessConfiguration: AWS = {
     name: 'aws',
     runtime: 'nodejs14.x',
     region: 'eu-west-1',
+    stage: 'dev',
     apiGateway: {
       minimumCompressionSize: 1024,
       shouldStartNameWithService: true,
@@ -24,6 +30,12 @@ const serverlessConfiguration: AWS = {
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
       NODE_OPTIONS: '--enable-source-maps --stack-trace-limit=1000',
+      SNS_TOPIC_ARN: {
+        Ref: 'createProductTopic',
+      },
+      SQS_QUEUE_URL: {
+        'Fn::GetAtt': ['catalogItemsQueue', 'Arn'],
+      },
     },
     iamRoleStatements: [
       {
@@ -42,9 +54,28 @@ const serverlessConfiguration: AWS = {
           'arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/stocks',
         ],
       },
+      {
+        Effect: 'Allow',
+        Action: [
+          'sqs:ReceiveMessage',
+          'sqs:DeleteMessage',
+          'sqs:GetQueueAttributes',
+          'sqs:SendMessage',
+        ],
+        Resource: {
+          'Fn::GetAtt': ['catalogItemsQueue', 'Arn'],
+        },
+      },
+      {
+        Effect: 'Allow',
+        Action: 'sns:Publish',
+        Resource: {
+          Ref: 'createProductTopic',
+        },
+      },
     ],
   },
-  functions: { getProductsList, getProductsById, createProduct },
+  functions: { getProductsList, getProductsById, createProduct, catalogBatchProcess },
   package: { individually: true },
   custom: {
     esbuild: {
@@ -64,6 +95,26 @@ const serverlessConfiguration: AWS = {
   },
   resources: {
     Resources: {
+      catalogItemsQueue: {
+        Type: 'AWS::SQS::Queue',
+      },
+      createProductTopic: {
+        Type: 'AWS::SNS::Topic',
+        Properties: {
+          DisplayName: 'Product creation topic',
+          TopicName: 'createProductTopic',
+        },
+      },
+      TopicSubscription: {
+        Type: 'AWS::SNS::Subscription',
+        Properties: {
+          Protocol: 'email',
+          Endpoint: 'mykyta_kurylko@epam.com',
+          TopicArn: {
+            Ref: 'createProductTopic',
+          },
+        },
+      },
       ProductsTable: {
         Type: 'AWS::DynamoDB::Table',
         Properties: {
@@ -86,6 +137,15 @@ const serverlessConfiguration: AWS = {
             ReadCapacityUnits: 1,
             WriteCapacityUnits: 1,
           },
+        },
+      },
+    },
+    Outputs: {
+      CatalogItemsQueueUrl: {
+        Description: 'URL for the catalog items SQS queue',
+        Value: { Ref: 'catalogItemsQueue' },
+        Export: {
+          Name: '${self:service}-${self:provider.stage}-CatalogItemsQueueUrl',
         },
       },
     },

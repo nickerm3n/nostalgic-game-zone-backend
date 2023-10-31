@@ -8,8 +8,12 @@ import csv from "csv-parser";
 import stream, { Readable } from "stream";
 import { S3Event } from "aws-lambda";
 import { streamToString } from "./helpers";
+import { SQSClient, SendMessageCommand } from "@aws-sdk/client-sqs";
 
 const s3Client = new S3Client();
+const sqsClient = new SQSClient();
+
+const SQS_QUEUE_URL = process.env.SQS_QUEUE_URL;
 
 export const main = async (event: S3Event): Promise<void> => {
   const s3Record = event.Records[0].s3;
@@ -33,7 +37,13 @@ export const main = async (event: S3Event): Promise<void> => {
     stream.Readable.from(dataString)
       .pipe(csv())
       .on("data", (row) => {
-        console.log(row);
+        sqsClient.send(
+          new SendMessageCommand({
+            QueueUrl: SQS_QUEUE_URL,
+            MessageBody: JSON.stringify(row),
+          }),
+        );
+
         data.push(row);
       })
       .on("end", async () => {
