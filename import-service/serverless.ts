@@ -10,6 +10,7 @@ const serverlessConfiguration: AWS = {
   provider: {
     name: "aws",
     runtime: "nodejs14.x",
+    region: "eu-west-1",
     apiGateway: {
       minimumCompressionSize: 1024,
       shouldStartNameWithService: true,
@@ -17,10 +18,20 @@ const serverlessConfiguration: AWS = {
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: "1",
       NODE_OPTIONS: "--enable-source-maps --stack-trace-limit=1000",
+      SQS_QUEUE_URL: {
+        "Fn::ImportValue": "product-service-dev-CatalogItemsQueueUrl",
+      },
     },
     iam: {
       role: {
         statements: [
+          {
+            Effect: "Allow",
+            Action: "sqs:SendMessage",
+            Resource: {
+              "Fn::ImportValue": "product-service-dev-CatalogItemsQueueArn",
+            },
+          },
           {
             Effect: "Allow",
             Action: [
