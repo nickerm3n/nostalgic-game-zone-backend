@@ -7,6 +7,9 @@ import { generatePolicy } from "@functions/basicAuthorizer/helper";
 export const basicAuthorizer = async (
   event: APIGatewayTokenAuthorizerEvent,
 ): Promise<APIGatewayAuthorizerResult> => {
+  const storedPasswordKey = process.env.PASSWORD_KEY;
+  const storedUserPassword = process.env[storedPasswordKey];
+
   const authorizationToken = event.authorizationToken;
 
   if (!authorizationToken) {
@@ -17,12 +20,17 @@ export const basicAuthorizer = async (
   const buff = Buffer.from(encodedCreds, "base64");
   const [username, password] = buff.toString("utf-8").split(":");
 
-  const expectedPassword = process.env[username];
+  console.log(`username: ${username}, password: ${password}`);
 
-  if (password === expectedPassword) {
-    return generatePolicy(encodedCreds, "Allow", event.methodArn);
-  } else {
+  if (
+    !username ||
+    !password ||
+    username !== storedPasswordKey ||
+    password !== storedUserPassword
+  ) {
     return generatePolicy(encodedCreds, "Deny", event.methodArn);
+  } else {
+    return generatePolicy(encodedCreds, "Allow", event.methodArn);
   }
 };
 
